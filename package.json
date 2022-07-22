@@ -1,28 +1,32 @@
 {
-  "name": "budgetme",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server/server.js",
-    "dev": "nodemon server/server.js",
-    "build": "cd client && npm install && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "dotenv": "^16.0.1",
-    "express": "^4.18.1",
-    "mongoose": "^6.4.4"
-  },
-  "engines": {
-    "node": "16.16.0"
-  },
-  "type": "module",
-  "devDependencies": {
-    "eslint": "^8.19.0",
-    "eslint-plugin-react": "^7.30.1"
-  }
+    "name": "budgetme",
+    "version": "1.0.0",
+    "description": "Budgeting app to track expenses",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server/server.js",
+        "dev": "nodemon server/server.js",
+        "build": "cd client && npm install && npm run build",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "Caroline Nguyen",
+    "license": "ISC",
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "dotenv": "^16.0.1",
+        "express": "^4.18.1",
+        "express-validator": "^6.14.2",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^6.4.4"
+    },
+    "engines": {
+        "node": "16.16.0"
+    },
+    "type": "module",
+    "devDependencies": {
+        "concurrently": "^7.3.0",
+        "eslint": "^8.19.0",
+        "eslint-plugin-react": "^7.30.1"
+    }
 }

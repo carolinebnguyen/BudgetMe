@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
+const { Schema } = mongoose;
 
-const expenseSchema = mongoose.Schema({
-  expenseName: {
-    required: true,
-    type: String,
-  },
-  cost: {
-    required: true,
-    type: Number,
-  },
+const ExpenseSchema = new Schema({
+    expenseName: {
+        type: String,
+        required: true,
+    },
+    cost: {
+        type: Number,
+        required: true,
+    },
 });
 
-const Expense = mongoose.model('Expense', expenseSchema);
+const Expense = mongoose.model('Expense', ExpenseSchema);
 
 export default Expense;

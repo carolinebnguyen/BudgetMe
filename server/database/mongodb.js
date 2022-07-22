@@ -1,19 +1,18 @@
-import mongoose from 'mongoose';
-import User from './models/user.js';
-import Expense from './models/expense.js';
-
 // Use environment variables for MongoDB Atlas connection
-import 'dotenv/config';
+import 'dotenv/config.js';
+import mongoose from 'mongoose';
+import User from './models/User.js';
+import Expense from './models/Expense.js';
 
-const connectionUri = process.env.MONGODB_ATLAS_URI;
-mongoose.connect(connectionUri);
+const connectionURI = process.env.MONGODB_ATLAS_URI;
+mongoose.connect(connectionURI);
 
 mongoose.connection.on('connected', () => {
-  console.log('Connected successfully to MongoDB!');
+    console.log('Connected successfully to MongoDB!');
 });
 
 mongoose.connection.on('error', () => {
-  console.log('Failed to connect to MongoDB.');
+    console.log('Failed to connect to MongoDB.');
 });
 
 export { User, Expense };
