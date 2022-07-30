@@ -10,6 +10,7 @@ const ExpenseSchema = new Schema({
         type: Number,
         required: true,
     },
+    // date
 });
 
 const Expense = mongoose.model('Expense', ExpenseSchema);
