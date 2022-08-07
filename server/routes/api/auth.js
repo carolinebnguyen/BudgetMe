@@ -7,10 +7,10 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-// @route GET api/auth
+// @route GET api/auth/user
 // @desc Get user by token
 // @access Private
-router.get('/', jwtAuth, async (req, res) => {
+router.get('/user', jwtAuth, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
         res.json(user);
@@ -20,11 +20,11 @@ router.get('/', jwtAuth, async (req, res) => {
     }
 });
 
-// @route POST api/auth
+// @route POST api/auth/login
 // @desc Authenticate user & get token
 // @access Public
 router.post(
-    '/',
+    '/login',
     [
         check('username', 'Username is required').not().isEmpty(),
         check('password', 'Password is required').exists(),

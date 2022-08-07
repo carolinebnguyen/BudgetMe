@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import authRoute from './routes/api/auth.js';
 import userRoute from './routes/api/users.js';
+import budgetProfileRoute from './routes/api/budgetProfile.js';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(express.json({ extended: false }));
 // Define Routes
 app.use('/api/auth', authRoute);
 app.use('/api/users', userRoute);
+app.use('/api/budget-profile', budgetProfileRoute);
 
 // Start Express Server
 const PORT = process.env.PORT || 3001;

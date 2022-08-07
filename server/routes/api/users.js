@@ -1,17 +1,17 @@
 import 'dotenv/config';
 import express from 'express';
 import { check, validationResult } from 'express-validator';
-import { User } from '../../database/mongodb.js';
+import { User, BudgetProfile } from '../../database/mongodb.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-// @route POST api/users
+// @route POST api/users/create
 // @desc Register user
 // @access Public
 router.post(
-    '/',
+    '/create',
     [
         check('name', 'Name is required').not().isEmpty(),
         check('email', 'Please enter a valid email').isEmail(),
@@ -56,10 +56,13 @@ router.post(
             });
 
             const salt = await bcrypt.genSalt(10);
-
             user.password = await bcrypt.hash(password, salt);
-
             await user.save();
+
+            const budgetProfile = new BudgetProfile({
+                userId: user.id,
+            });
+            budgetProfile.save();
 
             const payload = {
                 user: {

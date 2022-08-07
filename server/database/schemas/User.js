@@ -25,9 +25,6 @@ const UserSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    // pointer to BudgetProfile id
 });
 
-const User = mongoose.model('User', UserSchema);
-
-export default User;
+export default UserSchema;
