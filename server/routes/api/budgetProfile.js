@@ -75,7 +75,53 @@ router.post(
 );
 
 // @route POST api/budget-profile/expense-category
-// @desc Create monthly budget
+// @desc Create expense category
 // @access Private
+router.post(
+    '/expense-category',
+    [
+        check('name', 'Category name is required').not().isEmpty(),
+        check('percentage', 'Percentage must be an integer between 0 - 100')
+            .optional()
+            .isInt({ min: 0, max: 100 }),
+        check('amount').optional().isFloat({ min: 0 }),
+        jwtAuth,
+    ],
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
+            const { name, percentage } = req.body;
+
+            const budgetProfile = await BudgetProfile.findOne({
+                userId: req.user.id,
+            });
+
+            if (budgetProfile.expenseCategories.some((c) => c.name === name)) {
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: `The expense category ${name} already exists`,
+                        },
+                    ],
+                });
+            }
+
+            budgetProfile.expenseCategories.push({
+                name: name,
+                percentage: percentage ?? 0,
+            });
+            await budgetProfile.save();
+
+            res.json(budgetProfile);
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error');
+        }
+    }
+);
 
 export default router;
