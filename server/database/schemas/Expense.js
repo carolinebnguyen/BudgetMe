@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const ExpenseSchema = new Schema({
+    budgetProfileId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
     monthlyBudgetId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,

@@ -1,5 +1,7 @@
 import React from 'react';
 
-export const Header = () => {
+const Header = () => {
     return <h2>BudgetMe</h2>;
 };
+
+export default Header;

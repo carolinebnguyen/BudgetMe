@@ -62,8 +62,8 @@ router.post(
 
             const jwtToken = process.env.JWT_SECRET;
 
-            // Expires in 60 mins * 60 seconds per min = 3600 seconds
-            jwt.sign(payload, jwtToken, { expiresIn: 3600 }, (err, token) => {
+            // Expires in 3 hrs * 60 mins * 60 seconds per min = 10800 seconds
+            jwt.sign(payload, jwtToken, { expiresIn: 10800 }, (err, token) => {
                 if (err) throw err;
                 res.json({ token });
             });

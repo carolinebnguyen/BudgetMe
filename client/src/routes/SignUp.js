@@ -23,15 +23,23 @@ const SignUp = () => {
 
     return (
         <Flex minH={'100vh'} align={'center'} justify={'center'} bg={'gray.50'}>
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+            <Stack
+                spacing={8}
+                mx={'auto'}
+                minW={{ base: 'sm', sm: 'md', md: 'lg' }}
+                py={12}
+                px={6}
+            >
                 <Stack align={'center'}>
                     <Box>
-                        <Image
-                            src={logo}
-                            boxSize={100}
-                            objectFit={'cover'}
-                            objectPosition={'center'}
-                        />
+                        <Link as={RouteLink} to="/">
+                            <Image
+                                src={logo}
+                                boxSize={100}
+                                objectFit={'cover'}
+                                objectPosition={'center'}
+                            />
+                        </Link>
                     </Box>
                     <Heading fontSize={'4xl'} textAlign={'center'}>
                         Create an account
