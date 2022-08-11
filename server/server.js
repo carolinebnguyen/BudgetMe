@@ -27,6 +27,7 @@ app.get('/', (req, res) => {
 app.get('*', (req, res) => {
     res.redirect('/');
 });
+// TODO: Fix redirecting to an existing React Router page e.g. login
 
 // Start Express Server
 const PORT = process.env.PORT || 3001;

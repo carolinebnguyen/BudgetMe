@@ -62,7 +62,7 @@ router.post(
             const budgetProfile = new BudgetProfile({
                 userId: user.id,
             });
-            budgetProfile.save();
+            await budgetProfile.save();
 
             const payload = {
                 user: {

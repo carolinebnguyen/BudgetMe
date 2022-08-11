@@ -2,16 +2,15 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const ExpenseSchema = new Schema({
-    budgetProfileId: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
     },
-    monthlyBudgetId: {
-        type: mongoose.Schema.Types.ObjectId,
+    monthYear: {
+        // example: "12-2022"
+        type: String,
         required: true,
-    },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
     },
     name: {
         type: String,
@@ -21,9 +20,11 @@ const ExpenseSchema = new Schema({
         type: Number,
         required: true,
     },
+    categoryName: {
+        type: String,
+    },
     date: {
         type: Date,
-        default: Date.now,
     },
 });
 

@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 
-function jwtAuth(req, res, next) {
+const jwtAuth = (req, res, next) => {
     const token = req.header('x-auth-token');
 
     if (!token) {
@@ -9,8 +9,8 @@ function jwtAuth(req, res, next) {
     }
 
     try {
-        const jwtToken = process.env.JWT_SECRET;
-        const decoded = jwt.verify(token, jwtToken);
+        const jwtSecret = process.env.JWT_SECRET;
+        const decoded = jwt.verify(token, jwtSecret);
 
         req.user = decoded.user;
         next();
@@ -26,6 +26,6 @@ function jwtAuth(req, res, next) {
             status: 'INVALID',
         });
     }
-}
+};
 
 export default jwtAuth;
