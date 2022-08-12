@@ -78,11 +78,11 @@ router.post(
     }
 );
 
-// @route PUT api/budget-profile/monthly-budget
-// @desc Update monthly budget amount
+// @route PUT api/budget-profile/monthly-budget/:monthlyBudgetId
+// @desc Update monthly budget
 // @access Private
 router.put(
-    '/monthly-budget',
+    '/monthly-budget/:monthlyBudgetId',
     [
         check('monthYear', 'monthYear is required.').notEmpty(),
         check('monthYear', 'monthYear must be in MM-2YYY format.').matches(
@@ -97,6 +97,11 @@ router.put(
     ],
     async (req, res) => {
         try {
+            const monthlyBudgetId = req.params.monthlyBudgetId;
+            if (!mongoose.isValidObjectId(monthlyBudgetId)) {
+                return sendBadRequestError(res, `monthlyBudgetId is invalid.`);
+            }
+
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array() });
@@ -109,17 +114,41 @@ router.put(
             });
 
             const monthlyBudget = budgetProfile.monthlyBudgets.find(
-                (b) => b.monthYear === monthYear
+                (b) => b._id.toString() === monthlyBudgetId
             );
             if (!monthlyBudget) {
                 return sendBadRequestError(
                     res,
-                    `MonthlyBudget does not exist for MonthYear '${monthYear}'.`
+                    `MonthlyBudget does not exist.`
                 );
             }
 
+            const oldMonthYear = monthlyBudget.monthYear;
+            monthlyBudget.monthYear = monthYear;
             monthlyBudget.amount = amount;
+            if (
+                budgetProfile.monthlyBudgets.filter(
+                    (b) => b.monthYear === monthYear
+                ).length > 1
+            ) {
+                return sendBadRequestError(
+                    res,
+                    `MonthlyBudget already exists for MonthYear '${monthYear}'.`
+                );
+            }
+
             await budgetProfile.save();
+            await Expense.updateMany(
+                {
+                    userId: req.user.id,
+                    monthYear: oldMonthYear,
+                },
+                {
+                    $set: {
+                        monthYear: monthYear,
+                    },
+                }
+            );
 
             res.json(budgetProfile);
         } catch (err) {
@@ -129,53 +158,46 @@ router.put(
     }
 );
 
-// @route DELETE api/budget-profile/monthly-budget
+// @route DELETE api/budget-profile/monthly-budget/:monthlyBudgetId
 // @desc Delete monthly budget
 // @access Private
-router.delete(
-    '/monthly-budget',
-    [
-        check('monthYear', 'monthYear is required.').notEmpty(),
-        check('monthYear', 'monthYear must be in MM-2YYY format.').matches(
-            /^(1[0-2]|0[1-9])-(2\d{3})$/
-        ),
-        jwtAuth,
-    ],
-    async (req, res) => {
-        try {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() });
-            }
-
-            const { monthYear } = req.body;
-
-            const budgetProfile = await BudgetProfile.findOne({
-                userId: req.user.id,
-            });
-
-            const monthlyBudget = budgetProfile.monthlyBudgets.find(
-                (b) => b.monthYear === monthYear
-            );
-            if (!monthlyBudget) {
-                return sendBadRequestError(
-                    res,
-                    `MonthlyBudget does not exist for MonthYear '${monthYear}'.`
-                );
-            }
-
-            budgetProfile.monthlyBudgets = budgetProfile.monthlyBudgets.filter(
-                (b) => b !== monthlyBudget
-            );
-            await budgetProfile.save();
-
-            res.json(budgetProfile);
-        } catch (err) {
-            console.error(err.message);
-            res.status(500).send('Server error');
+router.delete('/monthly-budget/:monthlyBudgetId', jwtAuth, async (req, res) => {
+    try {
+        const monthlyBudgetId = req.params.monthlyBudgetId;
+        if (!mongoose.isValidObjectId(monthlyBudgetId)) {
+            return sendBadRequestError(res, `monthlyBudgetId is invalid.`);
         }
+
+        const budgetProfile = await BudgetProfile.findOne({
+            userId: req.user.id,
+        });
+
+        const monthlyBudget = budgetProfile.monthlyBudgets.find(
+            (b) => b._id.toString() === monthlyBudgetId
+        );
+        if (!monthlyBudget) {
+            return sendBadRequestError(
+                res,
+                `MonthlyBudget to delete does not exist.`
+            );
+        }
+
+        budgetProfile.monthlyBudgets = budgetProfile.monthlyBudgets.filter(
+            (b) => b !== monthlyBudget
+        );
+        await budgetProfile.save();
+
+        await Expense.deleteMany({
+            userId: req.user.id,
+            monthYear: monthlyBudget.monthYear,
+        });
+
+        res.json(budgetProfile);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
     }
-);
+});
 
 // @route POST api/budget-profile/expense-category
 // @desc Create expense category
@@ -235,11 +257,11 @@ router.post(
     }
 );
 
-// @route PUT api/budget-profile/expense-category
+// @route PUT api/budget-profile/expense-category/:expenseCategoryId
 // @desc Update expense category
 // @access Private
 router.put(
-    '/expense-category',
+    '/expense-category/:expenseCategoryId',
     [
         check('name', 'name is required.').notEmpty(),
         check('percentage', 'percentage must be an integer between 0 - 100.')
@@ -254,6 +276,14 @@ router.put(
                 return res.status(400).json({ errors: errors.array() });
             }
 
+            const expenseCategoryId = req.params.expenseCategoryId;
+            if (!mongoose.isValidObjectId(expenseCategoryId)) {
+                return sendBadRequestError(
+                    res,
+                    `expenseCategoryId is invalid.`
+                );
+            }
+
             const { name, percentage } = req.body;
 
             const budgetProfile = await BudgetProfile.findOne({
@@ -261,12 +291,24 @@ router.put(
             });
 
             const expenseCategory = budgetProfile.expenseCategories.find(
-                (c) => c.name === name
+                (c) => c._id.toString() === expenseCategoryId
             );
             if (!expenseCategory) {
                 return sendBadRequestError(
                     res,
-                    `Expense category '${name}' does not exist.`
+                    `Expense category does not exist.`
+                );
+            }
+
+            const oldExpenseCategoryName = expenseCategory.name;
+            expenseCategory.name = name;
+            if (
+                budgetProfile.expenseCategories.filter((c) => c.name === name)
+                    .length > 1
+            ) {
+                return sendBadRequestError(
+                    res,
+                    `Expense category '${name}' already exists.`
                 );
             }
 
@@ -283,6 +325,17 @@ router.put(
             }
 
             await budgetProfile.save();
+            await Expense.updateMany(
+                {
+                    userId: req.user.id,
+                    categoryName: oldExpenseCategoryName,
+                },
+                {
+                    $set: {
+                        categoryName: name,
+                    },
+                }
+            );
 
             res.json(budgetProfile);
         } catch (err) {
@@ -292,32 +345,38 @@ router.put(
     }
 );
 
-// @route DELETE api/budget-profile/expense-category
+// @route DELETE api/budget-profile/expense-category/:expenseCategoryId
 // @desc Delete expense category
 // @access Private
 router.delete(
-    '/expense-category',
-    [check('name', 'name is required.').notEmpty(), jwtAuth],
+    '/expense-category/:expenseCategoryId',
+    jwtAuth,
     async (req, res) => {
         try {
+            const expenseCategoryId = req.params.expenseCategoryId;
+            if (!mongoose.isValidObjectId(expenseCategoryId)) {
+                return sendBadRequestError(
+                    res,
+                    `expenseCategoryId is invalid.`
+                );
+            }
+
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array() });
             }
-
-            const { name } = req.body;
 
             const budgetProfile = await BudgetProfile.findOne({
                 userId: req.user.id,
             });
 
             const expenseCategory = budgetProfile.expenseCategories.find(
-                (c) => c.name === name
+                (c) => c._id.toString() === expenseCategoryId
             );
             if (!expenseCategory) {
                 return sendBadRequestError(
                     res,
-                    `Expense category '${name}' does not exist.`
+                    `Expense category to delete does not exist.`
                 );
             }
 
@@ -327,6 +386,18 @@ router.delete(
                 );
 
             await budgetProfile.save();
+
+            await Expense.updateMany(
+                {
+                    userId: req.user.id,
+                    categoryName: expenseCategory.name,
+                },
+                {
+                    $unset: {
+                        categoryName: null,
+                    },
+                }
+            );
 
             res.json(budgetProfile);
         } catch (err) {
@@ -375,7 +446,6 @@ router.get(
 router.get('/expense/:expenseId', jwtAuth, async (req, res) => {
     try {
         const expenseId = req.params.expenseId;
-
         if (!mongoose.isValidObjectId(expenseId)) {
             return sendBadRequestError(res, `expenseId is invalid.`);
         }
@@ -565,7 +635,6 @@ router.put(
 router.delete('/expense/:expenseId', jwtAuth, async (req, res) => {
     try {
         const expenseId = req.params.expenseId;
-
         if (!mongoose.isValidObjectId(expenseId)) {
             return sendBadRequestError(res, `expenseId is invalid.`);
         }
@@ -576,7 +645,10 @@ router.delete('/expense/:expenseId', jwtAuth, async (req, res) => {
         });
 
         if (response.deletedCount === 0) {
-            return sendBadRequestError(res, `Expense does not exist.`);
+            return sendBadRequestError(
+                res,
+                `Expense to delete does not exist.`
+            );
         }
 
         res.sendStatus(204);
@@ -587,5 +659,3 @@ router.delete('/expense/:expenseId', jwtAuth, async (req, res) => {
 });
 
 export default router;
-
-// TODO: Update PUT/DELETE for MonthlyBudget and ExpenseCategory to account for Expense
