@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import MonthlyBudgetSchema from './MonthlyBudget.js';
-import ExpenseCategorySchema from './ExpenseCategory.js';
+import MonthlyBudgetSchema from '#database/schemas/MonthlyBudget.js';
+import ExpenseCategorySchema from '#database/schemas/ExpenseCategory.js';
 const { Schema } = mongoose;
 
 const BudgetProfileSchema = new Schema({

@@ -1,17 +1,31 @@
 import 'dotenv/config';
 import express from 'express';
 import { check, validationResult } from 'express-validator';
-import { User, BudgetProfile } from '../../database/mongodb.js';
+import { User, BudgetProfile } from '#database/mongodb.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import jwtAuth from '#middleware/jwtAuth.js';
 
 const router = express.Router();
 
-// @route POST api/users/create
+// @route GET api/user
+// @desc Get user by token
+// @access Private
+router.get('/', jwtAuth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        res.json(user);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+// @route POST api/user
 // @desc Register user
 // @access Public
 router.post(
-    '/create',
+    '/',
     [
         check('name', 'Name is required').not().isEmpty(),
         check('email', 'Please enter a valid email').isEmail(),

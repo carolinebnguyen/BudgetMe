@@ -1,9 +1,9 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import mongoose from 'mongoose';
-import { BudgetProfile, Expense } from '../../database/mongodb.js';
-import jwtAuth from '../../middleware/jwtAuth.js';
-import { sendBadRequestError } from '../../utils/errorUtils.js';
+import { BudgetProfile, Expense } from '#database/mongodb.js';
+import jwtAuth from '#middleware/jwtAuth.js';
+import { sendBadRequestError } from '#util/errorUtil.js';
 
 const router = express.Router();
 

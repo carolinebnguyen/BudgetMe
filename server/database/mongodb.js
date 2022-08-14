@@ -1,9 +1,9 @@
 // Use environment variables for MongoDB Atlas connection
 import 'dotenv/config.js';
 import mongoose from 'mongoose';
-import UserSchema from './schemas/User.js';
-import BudgetProfileSchema from './schemas/BudgetProfile.js';
-import ExpenseSchema from './schemas/Expense.js';
+import UserSchema from '#database/schemas/User.js';
+import BudgetProfileSchema from '#database/schemas/BudgetProfile.js';
+import ExpenseSchema from '#database/schemas/Expense.js';
 
 const connectionURI = process.env.MONGODB_ATLAS_URI;
 mongoose.connect(connectionURI);
