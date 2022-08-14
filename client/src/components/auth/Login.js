@@ -13,7 +13,7 @@ import {
     Text,
     Image,
 } from '@chakra-ui/react';
-import logo from '../assets/logo.png';
+import logo from '../../assets/logo.png';
 
 const LoginPage = () => {
     // TODO: Add Login API usage
@@ -35,6 +35,7 @@ const LoginPage = () => {
                                 boxSize={100}
                                 objectFit={'cover'}
                                 objectPosition={'center'}
+                                draggable={'false'}
                             />
                         </Link>
                     </Box>

@@ -14,7 +14,7 @@ const App = () => {
     // If user is not defined, login/signup page defines user after successful login/signup and redirects to main page.
     const [user, setUser] = React.useState(null);
 
-    // TODO: Remove after using somewhere else
+    //TODO: Remove after using somewhere else
     React.useEffect(() => {
         fetch('/api')
             .then((res) => res.json())

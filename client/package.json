@@ -21,8 +21,8 @@
         "react-router-dom": "^6.3.0",
         "react-scripts": "5.0.1",
         "redux": "^4.2.0",
-        "redux-devtools-extension": "^2.13.9",
-        "redux-thunk": "^2.4.1"
+        "redux-thunk": "^2.4.1",
+        "uuid": "^8.3.2"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -48,5 +48,9 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "devDependencies": {
+        "@redux-devtools/core": "^3.13.1",
+        "redux-devtools-extension": "^2.13.9"
     }
 }

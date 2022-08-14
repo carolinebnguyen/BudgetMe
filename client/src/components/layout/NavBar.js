@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Link as RouteLink } from 'react-router-dom';
 import {
     Box,
     Flex,
@@ -57,19 +58,15 @@ const NavBar = () => {
                         onClick={isOpen ? onClose : onOpen}
                     />
                     <HStack spacing={4} alignItems={'center'}>
-                        {/* <Box
-                            fontWeight={'bold'}
-                            fontSize={'xl'}
-                            color={'white'}
-                        >
-                            BudgetMe
-                        </Box> */}
                         <Box>
-                            <Image
-                                src={logo}
-                                boxSize="180px"
-                                objectFit={'contain'}
-                            />
+                            <Link as={RouteLink} to="/">
+                                <Image
+                                    src={logo}
+                                    boxSize="15vh"
+                                    objectFit={'contain'}
+                                    draggable={'false'}
+                                />
+                            </Link>
                         </Box>
                         <HStack
                             as={'nav'}
