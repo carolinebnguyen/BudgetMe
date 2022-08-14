@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import authRoute from '#routes/api/auth.js';
 import userRoute from '#routes/api/user.js';
 import budgetProfileRoute from '#routes/api/budgetProfile.js';
+import expenseRoute from '#routes/api/expense.js';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
 app.use('/api/budget-profile', budgetProfileRoute);
+app.use('/api/expense', expenseRoute);
 
 // Return React web app
 app.get('*', (req, res) => {
