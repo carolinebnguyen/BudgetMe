@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import authRoute from '#routes/api/auth.js';
-import userRoute from '#routes/api/user.js';
+import userProfileRoute from '#routes/api/userProfile.js';
 import budgetProfileRoute from '#routes/api/budgetProfile.js';
 import expenseRoute from '#routes/api/expense.js';
 
@@ -19,7 +19,7 @@ app.use(morgan('dev'));
 
 // Define Routes
 app.use('/api/auth', authRoute);
-app.use('/api/user', userRoute);
+app.use('/api/user-profile', userProfileRoute);
 app.use('/api/budget-profile', budgetProfileRoute);
 app.use('/api/expense', expenseRoute);
 

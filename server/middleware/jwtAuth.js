@@ -18,12 +18,10 @@ const jwtAuth = (req, res, next) => {
         if (err instanceof jwt.TokenExpiredError) {
             res.status(401).json({
                 msg: 'Token is expired.',
-                status: 'EXPIRED',
             });
         }
         return res.status(401).json({
             msg: 'Token is invalid.',
-            status: 'INVALID',
         });
     }
 };

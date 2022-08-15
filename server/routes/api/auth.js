@@ -3,8 +3,22 @@ import { check, validationResult } from 'express-validator';
 import { User, BudgetProfile } from '#database/mongodb.js';
 import bcrypt from 'bcryptjs';
 import jwtSign from '#util/jwtSign.js';
+import jwtAuth from '#middleware/jwtAuth.js';
 
 const router = express.Router();
+
+// @route GET api/auth/user
+// @desc Get user by token
+// @access Private
+router.get('/user', jwtAuth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        res.json(user);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
 
 // @route POST api/auth/login
 // @desc Authenticate user & get token
@@ -45,8 +59,8 @@ router.post(
             delete user.password;
 
             res.json({
-                authToken,
                 user,
+                authToken,
             });
         } catch (err) {
             console.error(err.message);
@@ -117,8 +131,8 @@ router.post(
             delete user.password;
 
             res.json({
-                authToken,
                 user,
+                authToken,
             });
         } catch (err) {
             console.error(err.message);

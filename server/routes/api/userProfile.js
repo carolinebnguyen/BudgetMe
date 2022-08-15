@@ -5,7 +5,8 @@ import jwtAuth from '#middleware/jwtAuth.js';
 
 const router = express.Router();
 
-// @route GET api/user
+// TODO: Same as api/auth/user for now
+// @route GET api/user-profile
 // @desc Get user by token
 // @access Private
 router.get('/', jwtAuth, async (req, res) => {
