@@ -19,8 +19,12 @@ import {
     Image,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import logo from '../assets/logo_with_words.png';
-import defaultAvatar from '../assets/default_avatar.png';
+import logo from '../../assets/logo_with_words.png';
+import defaultAvatar from '../../assets/default_avatar.png';
+
+// Redux
+import store from '../../store.js';
+import { logout } from '../../slices/auth.js';
 
 const Links = ['Dashboard', 'Expenses', 'Summary'];
 
@@ -42,9 +46,14 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 const NavBar = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
+    const onLogout = (e) => {
+        e.preventDefault();
+        store.dispatch(logout());
+    };
+
     return (
         <>
-            <Box bg={'#9AD5B4'} px={4}>
+            <Box bg={'#54B87F'} px={4} minH={'5vh'}>
                 <Flex
                     h={16}
                     alignItems={'center'}
@@ -59,10 +68,10 @@ const NavBar = () => {
                     />
                     <HStack spacing={4} alignItems={'center'}>
                         <Box>
-                            <Link as={RouteLink} to="/">
+                            <Link as={RouteLink} to="/dashboard">
                                 <Image
                                     src={logo}
-                                    boxSize="15vh"
+                                    height="6vh"
                                     objectFit={'contain'}
                                     draggable={'false'}
                                 />
@@ -102,7 +111,7 @@ const NavBar = () => {
                                 <br />
                                 <MenuDivider />
                                 <MenuItem>Account Settings</MenuItem>
-                                <MenuItem>Logout</MenuItem>
+                                <MenuItem onClick={onLogout}>Logout</MenuItem>
                             </MenuList>
                         </Menu>
                     </Flex>

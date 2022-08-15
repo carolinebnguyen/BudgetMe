@@ -1,16 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import App from './App.js';
+import './css/index.css';
 
-// React Router
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-// Chakra UI + Pages
+// Chakra UI
 import { ChakraProvider } from '@chakra-ui/react';
-import Login from './components/auth/Login.js';
-import SignUp from './components/auth/SignUp.js';
-import Landing from './components/layout/Landing.js';
-import { extendTheme, Box } from '@chakra-ui/react';
-import './index.css';
+import { extendTheme } from '@chakra-ui/react';
 
 // Redux for State
 import { Provider } from 'react-redux';
@@ -27,21 +22,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <ChakraProvider theme={theme}>
         <Provider store={store}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Landing />} />
-                    <Route path="login" element={<Login />} />
-                    <Route path="signup" element={<SignUp />} />
-                    <Route
-                        path="*"
-                        element={
-                            <Box style={{ padding: '1rem' }}>
-                                <p>There's nothing here!</p>
-                            </Box>
-                        }
-                    />
-                </Routes>
-            </BrowserRouter>
+            <App />
         </Provider>
     </ChakraProvider>
 );

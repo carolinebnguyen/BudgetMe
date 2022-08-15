@@ -1,35 +1,59 @@
-import React from 'react';
-import './App.css';
-import { Outlet } from 'react-router-dom';
-import { Box } from '@chakra-ui/react';
-import NavBar from './components/NavBar';
+import React, { useEffect } from 'react';
+import './css/App.css';
+
+// Pages
+import Login from './components/auth/Login.js';
+import SignUp from './components/auth/SignUp.js';
+import Landing from './components/layout/Landing.js';
+import Profile from './components/Profile.js';
+import NotFound from './components/layout/NotFound.js';
+import Dashboard from './components/layout/Dashboard.js';
+import Summary from './components/layout/Summary.js';
+
+// React Router
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// Redux
+import store from './store.js';
+import { useDispatch } from 'react-redux';
+
+// Api
+import { setAuthToken } from './util/api.js';
+import { authLoadUser } from './actions/auth.js';
+import { logout } from './slices/auth.js';
 
 const App = () => {
-    const [data, setData] = React.useState(null);
+    const dispatch = useDispatch();
 
-    // TODO: Pass into navbar and login/signup page
-    // If user is defined, navbar does not show login/signup but instead shows profile pic, name
-    // If user is defined, login and signup page just redirects route back to main page
-    // If user is not defined, navbar shows login/signup links
-    // If user is not defined, login/signup page defines user after successful login/signup and redirects to main page.
-    const [user, setUser] = React.useState(null);
+    useEffect(() => {
+        // Set headers if authToken already exists
+        if (localStorage.authToken) {
+            setAuthToken(localStorage.authToken);
+            dispatch(authLoadUser());
+        }
 
-    //TODO: Remove after using somewhere else
-    React.useEffect(() => {
-        fetch('/api')
-            .then((res) => res.json())
-            .then((data) => setData(data.message));
-    }, []);
+        // Log user out from all tabs if they log out in one tab
+        window.addEventListener('storage', () => {
+            if (!localStorage.token) {
+                dispatch(logout());
+            }
+        });
+    }, [dispatch]);
 
     return (
-        <Box className="App">
-            <NavBar />
-            {/* <header className="App-header">
-        <img src='/budgetme.png' className="App-logo" alt="logo" />
-        <p>{!data ? "Loading..." : data}</p>
-      </header> */}
-            <Outlet />
-        </Box>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="login" element={<Login />} />
+                <Route path="signup" element={<SignUp />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="summary" element={<Summary />} />
+                <Route path="profile" element={<Profile />} />
+
+                {/* <Route path="dashboard" element={} /> */}
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+        </BrowserRouter>
     );
 };
 

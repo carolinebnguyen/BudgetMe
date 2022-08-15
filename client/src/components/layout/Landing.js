@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link as RouteLink } from 'react-router-dom';
 import {
     Box,
@@ -10,7 +11,23 @@ import {
 } from '@chakra-ui/react';
 import Header from '../layout/Header.js';
 
+// React Router
+import { useNavigate } from 'react-router-dom';
+
+// Redux
+import { useSelector } from 'react-redux';
+import { authSelector } from '../../slices/auth.js';
+
 const Landing = () => {
+    const navigate = useNavigate();
+    const { isAuthenticated } = useSelector(authSelector);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/dashboard');
+        }
+    });
+
     return (
         <>
             <Header />

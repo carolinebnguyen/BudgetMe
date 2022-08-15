@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = {
-    authenticated: false,
-    authToken: '',
+    loading: false,
+    isAuthenticated: false,
+    user: null,
+    authToken: localStorage.getItem('authToken'),
+    hasError: false,
 };
 
 // A slice for posts with our three reducers
@@ -10,22 +13,58 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        isAuthenticated: (state) => {
-            state.authenticated = true;
+        signup: (state) => {
+            state.loading = true;
+        },
+        signupSuccess: (state, { payload }) => {
+            state.loading = false;
+            state.isAuthenticated = true;
+            state.user = payload.user;
+            state.authToken = payload.authToken;
+        },
+        signupFailure: (state) => {
+            state.loading = false;
+            state.hasError = true;
+        },
+        login: (state) => {
+            state.loading = true;
+        },
+        loginSuccess: (state, { payload }) => {
+            state.loading = false;
+            state.isAuthenticated = true;
+            state.user = payload.user;
+            state.authToken = payload.authToken;
+        },
+        loginFailure: (state) => {
+            state.loading = false;
+            state.hasError = true;
+        },
+        loadUser: (state, { payload }) => {
+            state.isAuthenticated = true;
+            state.user = payload;
+        },
+        logout: (state) => {
+            state.authToken = null;
+            state.isAuthenticated = false;
+            state.user = null;
         },
     },
 });
 
-// Three actions generated from the slice
-export const { isAuthenticated } = authSlice.actions;
+// Actions
+export const {
+    signup,
+    signupSuccess,
+    signupFailure,
+    login,
+    loginSuccess,
+    loginFailure,
+    loadUser,
+    logout,
+} = authSlice.actions;
 
-// A selector
+// State Selector
 export const authSelector = (state) => state.auth;
 
-// The reducer
+// State Reducer
 export default authSlice.reducer;
-
-// Asynchronous thunk action
-export function fetchAuth() {
-    // TBD
-}

@@ -26,7 +26,7 @@ const Header = () => {
                             <Link as={RouteLink} to="/">
                                 <Image
                                     src={logo}
-                                    boxSize="15vh"
+                                    height="6vh"
                                     objectFit={'contain'}
                                     draggable={'false'}
                                 />

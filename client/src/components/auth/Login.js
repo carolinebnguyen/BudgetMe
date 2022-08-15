@@ -1,4 +1,4 @@
-import { Link as RouteLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import {
     Flex,
     Box,
@@ -15,8 +15,43 @@ import {
 } from '@chakra-ui/react';
 import logo from '../../assets/logo.png';
 
+// React Router
+import { Link as RouteLink, useNavigate } from 'react-router-dom';
+
+// Redux
+import { useDispatch, useSelector } from 'react-redux';
+import { authSelector } from '../../slices/auth.js';
+import { authLogin } from '../../actions/auth.js';
+
 const LoginPage = () => {
-    // TODO: Add Login API usage
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { isAuthenticated } = useSelector(authSelector);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/dashboard');
+        }
+    });
+
+    const [formData, setFormData] = useState({
+        username: '',
+        password: '',
+    });
+
+    const { username, password } = formData;
+
+    const onChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const onLogin = async (e) => {
+        e.preventDefault();
+
+        // TODO: Check if any input is not filled in and that passwords match. Otherwise, indicate some error message.
+
+        dispatch(authLogin(username, password));
+    };
 
     return (
         <Flex minH={'100vh'} align={'center'} justify={'center'} bg={'gray.50'}>
@@ -45,13 +80,23 @@ const LoginPage = () => {
                 </Stack>
                 <Box rounded={'lg'} bg={'white'} boxShadow={'lg'} p={8}>
                     <Stack spacing={4}>
-                        <FormControl id="email">
-                            <FormLabel>Email address</FormLabel>
-                            <Input type="email" />
+                        <FormControl id="username">
+                            <FormLabel>Username</FormLabel>
+                            <Input
+                                type="text"
+                                name="username"
+                                value={username}
+                                onChange={onChange}
+                            />
                         </FormControl>
                         <FormControl id="password">
                             <FormLabel>Password</FormLabel>
-                            <Input type="password" />
+                            <Input
+                                type="password"
+                                name="password"
+                                value={password}
+                                onChange={onChange}
+                            />
                         </FormControl>
                         <Stack spacing={10}>
                             <Stack
@@ -70,6 +115,7 @@ const LoginPage = () => {
                                 _hover={{
                                     bg: '#6FC393',
                                 }}
+                                onClick={onLogin}
                             >
                                 Sign in
                             </Button>
