@@ -1,8 +1,8 @@
 import {
-    signup,
+    signupStart,
     signupSuccess,
     signupFailure,
-    login,
+    loginStart,
     loginSuccess,
     loginFailure,
     loadUser,
@@ -26,7 +26,7 @@ export const authLoadUser = () => {
 export const authLogin = (username, password) => {
     return async (dispatch) => {
         try {
-            dispatch(login());
+            dispatch(loginStart());
             const response = await api.post('/auth/login', {
                 username,
                 password,
@@ -42,7 +42,7 @@ export const authLogin = (username, password) => {
 export const authSignup = (signupData) => {
     return async (dispatch) => {
         try {
-            dispatch(signup());
+            dispatch(signupStart());
             const response = await api.post('/auth/signup', signupData);
             dispatch(signupSuccess(response.data));
         } catch (err) {
