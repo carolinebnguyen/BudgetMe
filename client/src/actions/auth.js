@@ -1,12 +1,11 @@
 import {
-    signupStart,
     signupSuccess,
     signupFailure,
-    loginStart,
     loginSuccess,
     loginFailure,
     loadUser,
     logout,
+    errorReset,
 } from '../slices/auth.js';
 import api from '../util/api.js';
 
@@ -26,7 +25,7 @@ export const authLoadUser = () => {
 export const authLogin = (username, password) => {
     return async (dispatch) => {
         try {
-            dispatch(loginStart());
+            dispatch(errorReset());
             const response = await api.post('/auth/login', {
                 username,
                 password,
@@ -42,7 +41,7 @@ export const authLogin = (username, password) => {
 export const authSignup = (signupData) => {
     return async (dispatch) => {
         try {
-            dispatch(signupStart());
+            dispatch(errorReset());
             const response = await api.post('/auth/signup', signupData);
             dispatch(signupSuccess(response.data));
         } catch (err) {

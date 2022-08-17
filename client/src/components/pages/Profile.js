@@ -12,7 +12,10 @@ import {
     Center,
 } from '@chakra-ui/react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
-import defaultAvatar from '../assets/default_avatar.png';
+import defaultAvatar from '../../assets/default_avatar.png';
+
+// React Router
+import { Link as RouteLink } from 'react-router-dom';
 
 const Profile = () => {
     return (
@@ -71,6 +74,8 @@ const Profile = () => {
                 </FormControl>
                 <Stack spacing={6} direction={['column', 'row']}>
                     <Button
+                        as={RouteLink}
+                        to="/dashboard"
                         bg={'red.400'}
                         color={'white'}
                         w="full"
@@ -88,7 +93,7 @@ const Profile = () => {
                             bg: 'blue.500',
                         }}
                     >
-                        Submit
+                        Save
                     </Button>
                 </Stack>
             </Stack>

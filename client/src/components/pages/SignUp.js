@@ -12,6 +12,7 @@ import {
     Link,
     Image,
 } from '@chakra-ui/react';
+import { useLoadingNotification } from '../../util/loadingNotification.js';
 import logo from '../../assets/logo.png';
 
 // React Router
@@ -25,11 +26,17 @@ import { authSignup } from '../../actions/auth.js';
 const SignUp = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { isAuthenticated } = useSelector(authSelector);
+    const loadingNotification = useLoadingNotification();
+    const { isAuthenticated, hasError } = useSelector(authSelector);
 
     useEffect(() => {
         if (isAuthenticated) {
+            loadingNotification.displaySuccess(
+                'We created an account for you.'
+            );
             navigate('/dashboard');
+        } else if (hasError) {
+            loadingNotification.displayError('Unable to create an account.');
         }
     });
 
@@ -52,6 +59,7 @@ const SignUp = () => {
 
         // TODO: Check if any input is not filled in and that passwords match. Otherwise, indicate some error message.
 
+        loadingNotification.displayLoading('Creating an account for you...');
         dispatch(authSignup({ name, email, username, password }));
     };
 

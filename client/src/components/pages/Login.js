@@ -13,6 +13,7 @@ import {
     Text,
     Image,
 } from '@chakra-ui/react';
+import { useLoadingNotification } from '../../util/loadingNotification.js';
 import logo from '../../assets/logo.png';
 
 // React Router
@@ -26,11 +27,15 @@ import { authLogin } from '../../actions/auth.js';
 const LoginPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { isAuthenticated } = useSelector(authSelector);
+    const loadingNotification = useLoadingNotification();
+    const { isAuthenticated, hasError } = useSelector(authSelector);
 
     useEffect(() => {
         if (isAuthenticated) {
+            loadingNotification.displaySuccess('Logged into your account.');
             navigate('/dashboard');
+        } else if (hasError) {
+            loadingNotification.displayError('Unable to login.');
         }
     });
 
@@ -50,7 +55,15 @@ const LoginPage = () => {
 
         // TODO: Check if any input is not filled in and that passwords match. Otherwise, indicate some error message.
 
+        loadingNotification.displayLoading('Logging you in...');
         dispatch(authLogin(username, password));
+    };
+
+    const onKeyDown = async (e) => {
+        if (e.key === 'Enter') {
+            loadingNotification.displayLoading('Logging you in...');
+            dispatch(authLogin(username, password));
+        }
     };
 
     return (
@@ -96,6 +109,7 @@ const LoginPage = () => {
                                 name="password"
                                 value={password}
                                 onChange={onChange}
+                                onKeyDown={onKeyDown}
                             />
                         </FormControl>
                         <Stack spacing={10}>

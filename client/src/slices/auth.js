@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = {
-    loading: false,
+    loading: true,
     isAuthenticated: false,
     user: null,
     authToken: localStorage.getItem('authToken'),
@@ -13,9 +13,6 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        signupStart: (state) => {
-            state.loading = true;
-        },
         signupSuccess: (state, { payload }) => {
             state.loading = false;
             state.isAuthenticated = true;
@@ -25,9 +22,6 @@ const authSlice = createSlice({
         signupFailure: (state) => {
             state.loading = false;
             state.hasError = true;
-        },
-        loginStart: (state) => {
-            state.loading = true;
         },
         loginSuccess: (state, { payload }) => {
             state.loading = false;
@@ -40,27 +34,31 @@ const authSlice = createSlice({
             state.hasError = true;
         },
         loadUser: (state, { payload }) => {
+            state.loading = false;
             state.isAuthenticated = true;
             state.user = payload;
         },
         logout: (state) => {
+            state.loading = false;
             state.authToken = null;
             state.isAuthenticated = false;
             state.user = null;
+        },
+        errorReset: (state) => {
+            state.hasError = false;
         },
     },
 });
 
 // Actions
 export const {
-    signupStart,
     signupSuccess,
     signupFailure,
-    loginStart,
     loginSuccess,
     loginFailure,
     loadUser,
     logout,
+    errorReset,
 } = authSlice.actions;
 
 // State Selector

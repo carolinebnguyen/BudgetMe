@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-import { Link as RouteLink } from 'react-router-dom';
 import {
     Box,
     Flex,
@@ -22,22 +20,30 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import logo from '../../assets/logo_with_words.png';
 import defaultAvatar from '../../assets/default_avatar.png';
 
+// React Router
+import { Link as RouteLink } from 'react-router-dom';
+
 // Redux
 import store from '../../store.js';
 import { logout } from '../../slices/auth.js';
 
-const Links = ['Dashboard', 'Expenses', 'Summary'];
+const Links = [
+    { path: '/dashboard', name: 'Dashboard' },
+    { path: '/expenses', name: 'Expenses' },
+];
 
-const NavLink = ({ children }: { children: ReactNode }) => (
+const NavLink = ({ children, path }) => (
     <Link
+        as={RouteLink}
+        to={path}
         px={2}
         py={1}
         rounded={'md'}
+        textColor={'gray.50'}
         _hover={{
             textDecoration: 'none',
-            bg: '#54B87F',
+            bg: '#6FC393',
         }}
-        href={'#'}
     >
         {children}
     </Link>
@@ -71,7 +77,7 @@ const NavBar = () => {
                             <Link as={RouteLink} to="/dashboard">
                                 <Image
                                     src={logo}
-                                    height="6vh"
+                                    height={'6vh'}
                                     objectFit={'contain'}
                                     draggable={'false'}
                                 />
@@ -82,8 +88,10 @@ const NavBar = () => {
                             spacing={4}
                             display={{ base: 'none', md: 'flex' }}
                         >
-                            {Links.map((link) => (
-                                <NavLink key={link}>{link}</NavLink>
+                            {Links.map(({ path, name }) => (
+                                <NavLink key={name} path={path}>
+                                    {name}
+                                </NavLink>
                             ))}
                         </HStack>
                     </HStack>
@@ -110,7 +118,9 @@ const NavBar = () => {
                                 </Center>
                                 <br />
                                 <MenuDivider />
-                                <MenuItem>Account Settings</MenuItem>
+                                <MenuItem as={RouteLink} to="/profile">
+                                    Account Settings
+                                </MenuItem>
                                 <MenuItem onClick={onLogout}>Logout</MenuItem>
                             </MenuList>
                         </Menu>
@@ -120,8 +130,10 @@ const NavBar = () => {
                 {isOpen ? (
                     <Box pb={4} display={{ md: 'none' }}>
                         <Stack as={'nav'} spacing={4}>
-                            {Links.map((link) => (
-                                <NavLink key={link}>{link}</NavLink>
+                            {Links.map(({ path, name }) => (
+                                <NavLink key={name} path={path}>
+                                    {name}
+                                </NavLink>
                             ))}
                         </Stack>
                     </Box>
