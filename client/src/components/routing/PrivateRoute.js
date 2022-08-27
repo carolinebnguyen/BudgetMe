@@ -8,9 +8,9 @@ import { useSelector } from 'react-redux';
 import { authSelector } from '../../slices/auth.js';
 
 const PrivateRoute = () => {
-    const { loading, isAuthenticated } = useSelector(authSelector);
+    const { initialAuth, isAuthenticated } = useSelector(authSelector);
 
-    if (loading) {
+    if (initialAuth) {
         return (
             <Flex
                 minH={'100vh'}

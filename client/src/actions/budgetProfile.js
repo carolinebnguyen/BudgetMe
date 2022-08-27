@@ -1,5 +1,4 @@
 import {
-    getBudgetProfileStart,
     getBudgetProfileSuccess,
     getBudgetProfileFailure,
     editMonthlyBudgetStart,
@@ -8,15 +7,15 @@ import {
     editExpenseCategoryStart,
     editExpenseCategorySuccess,
     editExpenseCategoryFailure,
+    setSelectedMonthlyBudget
 } from '../slices/budgetProfile.js';
 
-import api from '../util.api.js';
+import api from '../util/api.js';
 
 // Async thunk getBudgetProfile action
 export const getBudgetProfile = () => {
     return async (dispatch) => {
         try {
-            dispatch(getBudgetProfileStart());
             const response = await api.get('/budget-profile');
             dispatch(getBudgetProfileSuccess(response.data));
         } catch (err) {
@@ -45,7 +44,7 @@ export const addMonthlyBudget = (monthYear, amount) => {
 export const updateMonthlyBudget = (monthlyBudgetId, monthYear, amount) => {
     return async (dispatch) => {
         try {
-            dispatch(editMonthlyBudgetStart());
+            dispatch(editMonthlyBudgetStart({ msg: 'Updating monthly budget...' }));
             const response = await api.put(
                 `/budget-profile/monthly-budget/${monthlyBudgetId}`,
                 {
@@ -53,9 +52,11 @@ export const updateMonthlyBudget = (monthlyBudgetId, monthYear, amount) => {
                     amount,
                 }
             );
-            dispatch(editMonthlyBudgetSuccess(response.data));
+            dispatch(editMonthlyBudgetSuccess({ ...response.data, msg: 'Updated monthly budget!' }));
+            const monthlyBudget = response.data.monthlyBudgets.find(m => m.monthYear === monthYear);
+            dispatch(setSelectedMonthlyBudget(monthlyBudget))
         } catch (err) {
-            dispatch(editMonthlyBudgetFailure());
+            dispatch(editMonthlyBudgetFailure({ msg: 'Failed to update monthly budget.' }));
         }
     };
 };

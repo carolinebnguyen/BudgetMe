@@ -1,11 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = {
-    loading: true,
+    initialAuth: true,
     isAuthenticated: false,
     user: null,
     authToken: localStorage.getItem('authToken'),
     hasError: false,
+    loading: {
+        show: false,
+        isFinished: false,
+        isError: false,
+        msg: '', 
+    }
 };
 
 // A slice for posts with our three reducers
@@ -13,52 +19,72 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
+        signupStart: (state) => {
+            state.loading = {
+                ...initialState.loading,
+                show: true,
+                msg: 'Creating an account for you...'
+            }
+        },
         signupSuccess: (state, { payload }) => {
-            state.loading = false;
+            state.initialAuth = false;
             state.isAuthenticated = true;
             state.user = payload.user;
             state.authToken = payload.authToken;
+            state.loading.isFinished = true;
+            state.loading.msg = 'We created an account for you.'
         },
         signupFailure: (state) => {
-            state.loading = false;
-            state.hasError = true;
+            state.loading.isFinished = true;
+            state.loading.isError = true;
+            state.loading.msg = 'Unable to create an account.'
+        },
+        loginStart: (state) => {
+            state.loading = {
+                ...initialState.loading,
+                show: true,
+                msg: 'Logging you in...'
+            }
         },
         loginSuccess: (state, { payload }) => {
-            state.loading = false;
+            state.initialAuth = false;
             state.isAuthenticated = true;
             state.user = payload.user;
             state.authToken = payload.authToken;
+            state.loading.isFinished = true;
+            state.loading.msg = 'Logged into your account.'
         },
         loginFailure: (state) => {
-            state.loading = false;
-            state.hasError = true;
+            state.loading.isFinished = true;
+            state.loading.isError = true;
+            state.loading.msg = 'Unable to login.'
         },
         loadUser: (state, { payload }) => {
-            state.loading = false;
+            state.initialAuth = false;
             state.isAuthenticated = true;
             state.user = payload;
+            state.loading = initialState.loading;
         },
         logout: (state) => {
-            state.loading = false;
+            state.initialAuth = false;
             state.authToken = null;
             state.isAuthenticated = false;
             state.user = null;
-        },
-        errorReset: (state) => {
-            state.hasError = false;
-        },
+            state.loading = initialState.loading;
+        }
     },
 });
 
 // Actions
 export const {
+    signupStart,
     signupSuccess,
     signupFailure,
+    loginStart,
     loginSuccess,
     loginFailure,
     loadUser,
-    logout,
-    errorReset,
+    logout
 } = authSlice.actions;
 
 // State Selector

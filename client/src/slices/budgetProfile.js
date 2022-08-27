@@ -1,55 +1,88 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = {
-    loading: false,
     monthlyBudgets: [],
     expenseCategories: [],
-    hasError: false,
+    selectedMonthlyBudget: null,
+    loading: {
+        show: false,
+        isFinished: false,
+        isError: false,
+        msg: '', 
+    }
 };
+
+const withMonthYearString = (monthlyBudgets) => {
+    const isArray = Array.isArray(monthlyBudgets);
+    if (!isArray) {
+        monthlyBudgets = [monthlyBudgets];
+    }
+    const result = monthlyBudgets.map(m => {
+        const dateString = m.monthYear.split('-');
+        dateString.splice(1, 0, '1');
+        const date = new Date(dateString.join('-'))
+        return {...m, monthYearString: date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+    })
+    return isArray ? result : result[0];
+}
 
 const budgetProfileSlice = createSlice({
     name: 'budgetProfile',
     initialState,
     reducers: {
-        getBudgetProfileStart: (state) => {
-            state.loading = true;
-        },
         getBudgetProfileSuccess: (state, { payload }) => {
-            state.loading = false;
-            state.monthlyBudgets = payload.monthlyBudgets;
+            state.monthlyBudgets = withMonthYearString(payload.monthlyBudgets)
             state.expenseCategories = payload.expenseCategories;
         },
         getBudgetProfileFailure: (state) => {
-            state.loading = false;
-            state.hasError = true;
+            state.loading = {
+                show: true,
+                isFinished: true,
+                isError: true,
+                msg: 'Encountered error retrieving your budget profile.'
+            }
         },
-        editMonthlyBudgetStart: (state) => {
-            state.loading = true;
+        editMonthlyBudgetStart: (state, { payload }) => {
+            state.loading = {
+                ...initialState.loading,
+                show: true,
+                msg: payload.msg
+            }
         },
         editMonthlyBudgetSuccess: (state, { payload }) => {
-            state.loading = false;
-            state.monthlyBudgets = payload.monthlyBudgets;
+            state.monthlyBudgets = withMonthYearString(payload.monthlyBudgets)
+            state.loading.isFinished = true;
+            state.loading.msg = payload.msg
         },
-        editMonthlyBudgetFailure: (state) => {
-            state.loading = false;
-            state.hasError = true;
+        editMonthlyBudgetFailure: (state, { payload }) => {
+            state.loading.isFinished = true;
+            state.loading.isError = true;
+            state.loading.msg = payload.msg
         },
-        editExpenseCategoryStart: (state) => {
-            state.loading = true;
+        editExpenseCategoryStart: (state, { payload }) => {
+            state.loading = {
+                ...initialState.loading,
+                show: true,
+                msg: payload.msg
+            }
         },
         editExpenseCategorySuccess: (state, { payload }) => {
-            state.loading = false;
             state.expenseCategories = payload.expenseCategories;
+            state.loading.isFinished = true;
+            state.loading.msg = payload.msg
         },
-        editExpenseCategoryFailure: (state) => {
-            state.loading = false;
-            state.hasError = true;
+        editExpenseCategoryFailure: (state, { payload }) => {
+            state.loading.isFinished = true;
+            state.loading.isError = true;
+            state.loading.msg = payload.msg
         },
+        setSelectedMonthlyBudget: (state, { payload }) => {
+            state.selectedMonthlyBudget = withMonthYearString(payload);
+        }
     },
 });
 
 export const {
-    getBudgetProfileStart,
     getBudgetProfileSuccess,
     getBudgetProfileFailure,
     editMonthlyBudgetStart,
@@ -58,6 +91,7 @@ export const {
     editExpenseCategoryStart,
     editExpenseCategorySuccess,
     editExpenseCategoryFailure,
+    setSelectedMonthlyBudget
 } = budgetProfileSlice.actions;
 
 export const budgetProfileSelector = (state) => state.budgetProfile;

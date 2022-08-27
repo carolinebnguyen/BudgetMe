@@ -68,6 +68,17 @@ router.post(
                 monthYear,
                 amount: amount ?? 0,
             });
+
+            // Sort monthly budgets in chronological order
+            budgetProfile.monthlyBudgets.sort((a,b) => {
+                [a,b] = [a,b].map(m => {
+                    const dateString = m.monthYear.split('-');
+                    dateString.splice(1, 0, '1');
+                    return new Date(dateString.join('-'));
+                })
+                return b - a;
+            });
+            
             await budgetProfile.save();
 
             res.json(budgetProfile);

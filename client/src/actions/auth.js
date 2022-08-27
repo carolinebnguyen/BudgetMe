@@ -1,17 +1,21 @@
 import {
+    signupStart,
     signupSuccess,
     signupFailure,
+    loginStart,
     loginSuccess,
     loginFailure,
     loadUser,
     logout,
-    errorReset,
 } from '../slices/auth.js';
 import api from '../util/api.js';
 
 // Async thunk load user action
 export const authLoadUser = () => {
     return async (dispatch) => {
+        if (!localStorage.authToken) {
+            return dispatch(logout());
+        }
         try {
             const response = await api.get('/auth/user');
             dispatch(loadUser(response.data));
@@ -25,7 +29,7 @@ export const authLoadUser = () => {
 export const authLogin = (username, password) => {
     return async (dispatch) => {
         try {
-            dispatch(errorReset());
+            dispatch(loginStart());
             const response = await api.post('/auth/login', {
                 username,
                 password,
@@ -41,7 +45,7 @@ export const authLogin = (username, password) => {
 export const authSignup = (signupData) => {
     return async (dispatch) => {
         try {
-            dispatch(errorReset());
+            dispatch(signupStart());
             const response = await api.post('/auth/signup', signupData);
             dispatch(signupSuccess(response.data));
         } catch (err) {

@@ -24,8 +24,9 @@ import defaultAvatar from '../../assets/default_avatar.png';
 import { Link as RouteLink } from 'react-router-dom';
 
 // Redux
+import { useSelector } from 'react-redux';
 import store from '../../store.js';
-import { logout } from '../../slices/auth.js';
+import { authSelector, logout } from '../../slices/auth.js';
 
 const Links = [
     { path: '/dashboard', name: 'Dashboard' },
@@ -50,6 +51,7 @@ const NavLink = ({ children, path }) => (
 );
 
 const NavBar = () => {
+    const { user } = useSelector(authSelector);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const onLogout = (e) => {
@@ -59,7 +61,7 @@ const NavBar = () => {
 
     return (
         <>
-            <Box bg={'#54B87F'} px={4} minH={'5vh'}>
+            <Box bg={'#54B87F'} px={4} height={'5vh'}>
                 <Flex
                     h={16}
                     alignItems={'center'}
@@ -114,7 +116,7 @@ const NavBar = () => {
                                 </Center>
                                 <br />
                                 <Center>
-                                    <p>Username</p>
+                                    <p>Logged in as <b>{user.username}</b></p>
                                 </Center>
                                 <br />
                                 <MenuDivider />

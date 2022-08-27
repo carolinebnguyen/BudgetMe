@@ -21,23 +21,31 @@ import { Link as RouteLink, useNavigate } from 'react-router-dom';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { authSelector } from '../../slices/auth.js';
+import { authSelector, resetLoading } from '../../slices/auth.js';
 import { authLogin } from '../../actions/auth.js';
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const loadingNotification = useLoadingNotification();
-    const { isAuthenticated, hasError } = useSelector(authSelector);
+    const { isAuthenticated, loading } = useSelector(authSelector);
 
     useEffect(() => {
         if (isAuthenticated) {
-            loadingNotification.displaySuccess('Logged into your account.');
             navigate('/dashboard');
-        } else if (hasError) {
-            loadingNotification.displayError('Unable to login.');
+        } 
+        if (loading.show) {
+            if (!loading.isFinished) {
+                loadingNotification.displayLoading(loading.msg);
+            }
+            else if (!loading.isError) {
+                loadingNotification.displaySuccess(loading.msg);
+            }
+            else {
+                loadingNotification.displayError(loading.msg);
+            }
         }
-    });
+    }, [isAuthenticated, loading]);
 
     const [formData, setFormData] = useState({
         username: '',
@@ -54,15 +62,12 @@ const LoginPage = () => {
         e.preventDefault();
 
         // TODO: Check if any input is not filled in and that passwords match. Otherwise, indicate some error message.
-
-        loadingNotification.displayLoading('Logging you in...');
-        dispatch(authLogin(username, password));
+        dispatch(authLogin(username.trim(), password));
     };
 
     const onKeyDown = async (e) => {
         if (e.key === 'Enter') {
-            loadingNotification.displayLoading('Logging you in...');
-            dispatch(authLogin(username, password));
+            dispatch(authLogin(username.trim(), password));
         }
     };
 

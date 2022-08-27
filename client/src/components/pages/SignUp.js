@@ -27,18 +27,24 @@ const SignUp = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const loadingNotification = useLoadingNotification();
-    const { isAuthenticated, hasError } = useSelector(authSelector);
+    const { isAuthenticated, loading } = useSelector(authSelector);
 
     useEffect(() => {
         if (isAuthenticated) {
-            loadingNotification.displaySuccess(
-                'We created an account for you.'
-            );
             navigate('/dashboard');
-        } else if (hasError) {
-            loadingNotification.displayError('Unable to create an account.');
         }
-    });
+        if (loading.show) {
+            if (!loading.isFinished) {
+                loadingNotification.displayLoading(loading.msg);
+            }
+            else if (!loading.isError) {
+                loadingNotification.displaySuccess(loading.msg);
+            }
+            else {
+                loadingNotification.displayError(loading.msg);
+            }
+        }
+    }, [isAuthenticated, loading]);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -58,9 +64,13 @@ const SignUp = () => {
         e.preventDefault();
 
         // TODO: Check if any input is not filled in and that passwords match. Otherwise, indicate some error message.
-
-        loadingNotification.displayLoading('Creating an account for you...');
         dispatch(authSignup({ name, email, username, password }));
+    };
+
+    const onKeyDown = async (e) => {
+        if (e.key === 'Enter') {
+            dispatch(authSignup({ name, email, username, password }));
+        }
     };
 
     return (
@@ -133,6 +143,7 @@ const SignUp = () => {
                                 name="repeatedPassword"
                                 value={repeatedPassword}
                                 onChange={onChange}
+                                onKeyDown={onKeyDown}
                             />
                         </FormControl>
                         <Button
