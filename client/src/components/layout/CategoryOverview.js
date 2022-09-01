@@ -1,10 +1,8 @@
-import { useEffect } from 'react';
 import { Divider, Flex, SimpleGrid, Box, Container } from '@chakra-ui/react';
-import NavBar from './NavBar.js';
 
 const CategoryOverview = () => {
     return (
-        <Flex minW={'70vw'} justify={'center'}>
+        <Flex width={'60vw'} justify={'center'}>
             <Divider orientation='vertical' />
             <Container
                 bgColor={'pink'}

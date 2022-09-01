@@ -44,7 +44,7 @@ const SignUp = () => {
                 loadingNotification.displayError(loading.msg);
             }
         }
-    }, [isAuthenticated, loading]);
+    }, [isAuthenticated, loading, loadingNotification, navigate]);
 
     const [formData, setFormData] = useState({
         name: '',

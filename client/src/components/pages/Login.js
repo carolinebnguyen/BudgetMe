@@ -21,7 +21,7 @@ import { Link as RouteLink, useNavigate } from 'react-router-dom';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { authSelector, resetLoading } from '../../slices/auth.js';
+import { authSelector } from '../../slices/auth.js';
 import { authLogin } from '../../actions/auth.js';
 
 const LoginPage = () => {
@@ -45,7 +45,7 @@ const LoginPage = () => {
                 loadingNotification.displayError(loading.msg);
             }
         }
-    }, [isAuthenticated, loading]);
+    }, [isAuthenticated, loading, loadingNotification, navigate]);
 
     const [formData, setFormData] = useState({
         username: '',
