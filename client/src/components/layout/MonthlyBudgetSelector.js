@@ -30,12 +30,6 @@ const MonthlyBudgetSelector = () => {
     const { isOpen: isEditMonthlyBudgetOpen, onOpen: onEditMonthlyBudgetOpen, onClose: onEditMonthlyBudgetClose } = useDisclosure();
     const { isOpen: isDeleteMonthlyBudgetOpen, onOpen: onDeleteMonthlyBudgetOpen, onClose: onDeleteMonthlyBudgetClose } = useDisclosure();
 
-    useEffect(() => {
-        if (monthlyBudgets.length > 0 && !selectedMonthlyBudget) {
-            onMonthlyBudget(monthlyBudgets[0])
-        }
-    });
-
     const renderMonthlyBudgets = () => {
         if (monthlyBudgets.length === 0) {
             return null;
