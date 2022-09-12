@@ -1,60 +1,69 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = {
-    loading: false,
-    currentExpense: null,
+    selectedExpense: null,
     monthlyExpenses: [],
     allExpenses: [],
     deleteExpense: false,
-    hasError: false,
+    loading: {
+        show: false,
+        isFinished: false,
+        isError: false,
+        msg: '', 
+    }
 };
 
 const expenseSlice = createSlice({
     name: 'expense',
     initialState,
     reducers: {
-        getExpenseStart: (state) => {
-            state.loading = true;
+        getExpenseStart: (state, { payload }) => {
+            state.loading.show = false;
         },
-        getCurrentExpenseSuccess: (state, { payload }) => {
-            state.loading = false;
-            state.currentExpense = payload;
+        getSelectedExpenseSuccess: (state, { payload }) => {
+            state.selectedExpense = payload;
         },
         getMonthlyExpensesSuccess: (state, { payload }) => {
-            state.loading = false;
             state.monthlyExpenses = payload;
         },
         getAllExpensesSuccess: (state, { payload }) => {
-            state.loading = false;
             state.allExpenses = payload;
         },
-        getExpenseFailure: (state) => {
-            state.loading = false;
-            state.hasError = true;
+        getExpenseFailure: (state, { payload }) => {
+            state.loading.show = true;
+            state.loading.isFinished = true;
+            state.loading.isError = true;
+            state.loading.msg = payload.msg;
         },
-        editCurrentExpenseStart: (state) => {
-            state.loading = true;
+        editExpenseStart: (state, { payload }) => {
+            state.loading = {
+                ...initialState.loading,
+                show: true,
+                msg: payload.msg
+            }
         },
-        editCurrentExpenseSuccess: (state, { payload }) => {
-            state.loading = false;
-            state.currentExpense = payload;
+        editExpenseSuccess: (state, { payload }) => {
+            state.selectedExpense = payload.data;
+            state.loading.isFinished = true;
+            state.loading.msg = payload.msg;
         },
-        editCurrentExpenseFailure: (state) => {
-            state.loading = false;
-            state.hasError = true;
+        editExpenseFailure: (state, { payload }) => {
+            state.loading.isFinished = true;
+            state.loading.isError = true;
+            state.loading.msg = payload.msg;
         },
     },
 });
 
 export const {
     getExpenseStart,
-    getCurrentExpenseSuccess,
+    getSelectedExpenseSuccess,
     getMonthlyExpensesSuccess,
     getAllExpensesSuccess,
     getExpenseFailure,
-    editCurrentExpenseStart,
-    editCurrentExpenseSuccess,
-    editCurrentExpenseFailure,
+    editExpenseStart,
+    editExpenseSuccess,
+    editExpenseFailure,
 } = expenseSlice.actions;
 
 export const expenseSelector = (state) => state.expense;

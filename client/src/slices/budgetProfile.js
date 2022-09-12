@@ -52,12 +52,12 @@ const budgetProfileSlice = createSlice({
         editMonthlyBudgetSuccess: (state, { payload }) => {
             state.monthlyBudgets = withMonthYearString(payload.monthlyBudgets)
             state.loading.isFinished = true;
-            state.loading.msg = payload.msg
+            state.loading.msg = payload.msg;
         },
         editMonthlyBudgetFailure: (state, { payload }) => {
             state.loading.isFinished = true;
             state.loading.isError = true;
-            state.loading.msg = payload.msg
+            state.loading.msg = payload.msg;
         },
         editExpenseCategoryStart: (state, { payload }) => {
             state.loading = {
@@ -69,12 +69,12 @@ const budgetProfileSlice = createSlice({
         editExpenseCategorySuccess: (state, { payload }) => {
             state.expenseCategories = payload.expenseCategories;
             state.loading.isFinished = true;
-            state.loading.msg = payload.msg
+            state.loading.msg = payload.msg;
         },
         editExpenseCategoryFailure: (state, { payload }) => {
             state.loading.isFinished = true;
             state.loading.isError = true;
-            state.loading.msg = payload.msg
+            state.loading.msg = payload.msg;
         },
         setSelectedMonthlyBudget: (state, { payload }) => {
             state.selectedMonthlyBudget = withMonthYearString(payload);

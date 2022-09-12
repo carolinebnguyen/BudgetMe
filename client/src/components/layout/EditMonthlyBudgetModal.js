@@ -37,7 +37,12 @@ const EditMonthlyBudgetModal = ({isOpen, onClose}) => {
     }
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size={'sm'} isCentered>
+        <Modal 
+            isOpen={isOpen} 
+            onClose={onClose} 
+            size={'sm'} 
+            isCentered
+        >
             <ModalOverlay />
             <ModalContent>
             <ModalHeader>Edit monthly budget</ModalHeader>

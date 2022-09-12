@@ -39,7 +39,7 @@ const DeleteMonthlyBudgetModal = ({isOpen, onClose}) => {
             <ModalHeader>Delete Monthly Budget</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                Are you sure? You can't undo this action afterwards.
+                Are you sure? You can't undo this action afterward.
             </ModalBody>
 
             <ModalFooter>

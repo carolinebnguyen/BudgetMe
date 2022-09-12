@@ -30,7 +30,8 @@ import { authSelector, logout } from '../../slices/auth.js';
 
 const Links = [
     { path: '/dashboard', name: 'Dashboard' },
-    { path: '/expenses', name: 'Expenses' },
+    { path: '/view-expenses', name: 'View Expenses' },
+    { path: '/add-expense', name: 'Add Expense' },
 ];
 
 const NavLink = ({ children, path }) => (
@@ -92,7 +93,7 @@ const NavBar = () => {
                         >
                             {Links.map(({ path, name }) => (
                                 <NavLink key={name} path={path}>
-                                    {name}
+                                    <b>{name}</b>
                                 </NavLink>
                             ))}
                         </HStack>

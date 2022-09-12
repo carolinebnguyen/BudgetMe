@@ -13,7 +13,6 @@ import {
     Text,
     Image,
 } from '@chakra-ui/react';
-import { useLoadingNotification } from '../../util/loadingNotification.js';
 import logo from '../../assets/logo.png';
 
 // React Router
@@ -27,25 +26,13 @@ import { authLogin } from '../../actions/auth.js';
 const LoginPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const loadingNotification = useLoadingNotification();
-    const { isAuthenticated, loading } = useSelector(authSelector);
+    const { isAuthenticated } = useSelector(authSelector);
 
     useEffect(() => {
         if (isAuthenticated) {
             navigate('/dashboard');
         } 
-        if (loading.show) {
-            if (!loading.isFinished) {
-                loadingNotification.displayLoading(loading.msg);
-            }
-            else if (!loading.isError) {
-                loadingNotification.displaySuccess(loading.msg);
-            }
-            else {
-                loadingNotification.displayError(loading.msg);
-            }
-        }
-    }, [isAuthenticated, loading, loadingNotification, navigate]);
+    }, [isAuthenticated, navigate]);
 
     const [formData, setFormData] = useState({
         username: '',

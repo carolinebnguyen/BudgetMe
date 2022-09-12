@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
 import {
     Box,
     Button,
-    HStack,
+    Flex,
     Menu,
     MenuButton,
     MenuList,
@@ -10,6 +9,7 @@ import {
     MenuItemOption,
     MenuOptionGroup,
     MenuDivider,
+    VStack,
     useDisclosure
 } from '@chakra-ui/react';
 import { AddIcon, CalendarIcon, ChevronDownIcon } from '@chakra-ui/icons';
@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { budgetProfileSelector, setSelectedMonthlyBudget } from '../../slices/budgetProfile.js';
 import { getMonthlyExpenses } from '../../actions/expense.js';
 
-const MonthlyBudgetSelector = () => {
+const MonthlyBudgetSelector = ({ showNew, showEdit, showDelete }) => {
     const dispatch = useDispatch();
     const { monthlyBudgets, selectedMonthlyBudget } = useSelector(budgetProfileSelector);
 
@@ -52,7 +52,7 @@ const MonthlyBudgetSelector = () => {
 
     return (
         <>
-            <HStack spacing={'1vh'}>
+            <VStack>
                 <Box>
                     <Menu matchWidth>
                         <MenuButton as={Button} leftIcon={<CalendarIcon />} rightIcon={<ChevronDownIcon />} size={'lg'} width={'20vw'}>
@@ -65,9 +65,11 @@ const MonthlyBudgetSelector = () => {
                         </MenuList>
                     </Menu>
                 </Box>
-                <Button colorScheme={'blue'} size={'md'} onClick={onEditMonthlyBudgetOpen}>Edit</Button>
-                <Button colorScheme={'red'} size={'md'} onClick={onDeleteMonthlyBudgetOpen}>Delete</Button>
-            </HStack>
+                <Flex width={'100%'} justify={'space-evenly'}>
+                    <Button colorScheme={'blue'} width={'45%'} size={'md'} onClick={onEditMonthlyBudgetOpen}>Edit</Button>
+                    <Button colorScheme={'red'} width={'45%'} size={'md'} onClick={onDeleteMonthlyBudgetOpen}>Delete</Button>
+                </Flex>
+            </VStack>
             <NewMonthlyBudgetModal isOpen={isNewMonthlyBudgetOpen} onClose={onNewMonthlyBudgetClose} />
             <EditMonthlyBudgetModal isOpen={isEditMonthlyBudgetOpen} onClose={onEditMonthlyBudgetClose} />
             <DeleteMonthlyBudgetModal isOpen={isDeleteMonthlyBudgetOpen} onClose={onDeleteMonthlyBudgetClose} />

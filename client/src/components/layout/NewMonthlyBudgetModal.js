@@ -61,7 +61,12 @@ const NewMonthlyBudgetModal = ({isOpen, onClose}) => {
     }
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size={'sm'} isCentered>
+        <Modal 
+            isOpen={isOpen} 
+            onClose={onClose} 
+            size={'sm'} 
+            isCentered
+        >
             <ModalOverlay />
             <ModalContent>
             <ModalHeader>Create a new monthly budget</ModalHeader>
