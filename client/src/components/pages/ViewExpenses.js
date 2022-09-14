@@ -13,36 +13,40 @@ import {
     Th,
     Tr,
     VStack,
+    useDisclosure
   } from '@chakra-ui/react';
 import { MdAttachMoney } from 'react-icons/md';
 
 import NavBar from '../layout/NavBar.js';
 import MonthlyBudgetSelector from '../layout/MonthlyBudgetSelector.js';
+import EditExpenseModal from '../layout/EditExpenseModal.js';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { budgetProfileSelector } from '../../slices/budgetProfile.js';
 import { expenseSelector } from '../../slices/expense.js';
-import { getMonthlyExpenses } from '../../actions/expense.js';
+import { getMonthlyExpenses, setSelectedExpense } from '../../actions/expense.js';
 
 const ViewExpenses = () => {
     const dispatch = useDispatch();
     const { selectedMonthlyBudget } = useSelector(budgetProfileSelector);
-    const { monthlyExpenses } = useSelector(expenseSelector);
+    const { monthlyExpenses, selectedExpense } = useSelector(expenseSelector);
+    const { isOpen: isEditExpenseOpen, onOpen: onEditExpenseOpen, onClose: onEditExpenseClose } = useDisclosure();
     const [hoverState, setHoverState] = useState({});
-
-    const onHover = (index, isHovered) => {
-        setHoverState({ [index]: isHovered });
-    }
 
     useEffect(() => {
         if (selectedMonthlyBudget) {
             dispatch(getMonthlyExpenses(selectedMonthlyBudget.monthYear));
         }
-    }, [selectedMonthlyBudget]);
+    }, [selectedMonthlyBudget, selectedExpense]);
 
-    const onClickExpense = () => {
-        console.log('Clicked Expense');
+    const onHover = (index, isHovered) => {
+        setHoverState({ [index]: isHovered });
+    }
+
+    const onClickExpense = (expense) => {
+        dispatch(setSelectedExpense(expense));
+        onEditExpenseOpen();
     };
 
     const renderExpenses = () => {
@@ -59,13 +63,13 @@ const ViewExpenses = () => {
                         style={{cursor: 'pointer'}} 
                         onMouseOver={()=>onHover(index, true)} 
                         onMouseOut={()=>onHover(index, false)}
-                        onClick={onClickExpense}
+                        onClick={()=>onClickExpense(expense)}
                         bg={hoverState[index] ? 'gray.100' : 'white'}
                     >
                         <Td>{date ?? 'None'}</Td>
                         <Td>{expense.categoryName ?? 'None'}</Td>
                         <Td>{expense.name}</Td>
-                        <Td isNumeric><Flex align={'center'}><Icon as={MdAttachMoney} color={'green'} />{expense.cost}</Flex></Td>
+                        <Td isNumeric><Flex align={'center'}><Icon as={MdAttachMoney} color={'green'} />{expense.cost.toFixed(2)}</Flex></Td>
                     </Tr>
                 );
             });
@@ -109,9 +113,8 @@ const ViewExpenses = () => {
                             </Table>
                         </TableContainer>
                     </VStack>
-            
-                    
             </Flex>
+            <EditExpenseModal isOpen={isEditExpenseOpen} onClose={onEditExpenseClose} />
         </>
     );
 };

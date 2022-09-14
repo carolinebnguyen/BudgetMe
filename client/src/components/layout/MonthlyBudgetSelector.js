@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { budgetProfileSelector, setSelectedMonthlyBudget } from '../../slices/budgetProfile.js';
 import { getMonthlyExpenses } from '../../actions/expense.js';
 
-const MonthlyBudgetSelector = ({ showNew, showEdit, showDelete }) => {
+const MonthlyBudgetSelector = () => {
     const dispatch = useDispatch();
     const { monthlyBudgets, selectedMonthlyBudget } = useSelector(budgetProfileSelector);
 

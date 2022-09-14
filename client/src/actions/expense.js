@@ -25,6 +25,13 @@ export const getSelectedExpense = (expenseId) => {
     };
 };
 
+// Non-async setSelectedExpense action
+export const setSelectedExpense = (expense) => {
+    return (dispatch) => {
+        dispatch(getSelectedExpenseSuccess(expense));
+    };
+};
+
 // Async thunk getMonthlyExpenses action
 export const getMonthlyExpenses = (monthYear) => {
     return async (dispatch) => {
@@ -88,13 +95,14 @@ export const editExpense = (expenseId, monthYear, categoryName, name, cost, date
                 date = date.split('-');
                 date = date.slice(1, date.length).concat(date.slice(0,1)).join('-');
             }
-            const response = await api.put(`/expense/${expenseId}`, {
+            const dataPayload = {
                 monthYear,
                 categoryName,
                 name,
                 cost,
-                date
-            });
+            }
+            if (date) dataPayload.date = date;
+            const response = await api.put(`/expense/${expenseId}`, dataPayload);
             dispatch(editExpenseSuccess({ data: response.data, msg: 'Successfully edited expense!' }));
         } catch (err) {
             const errMsg = err.response.data.errors[0].msg;
